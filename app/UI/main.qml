@@ -9,7 +9,7 @@ ApplicationWindow {
 
     Text {
         anchors.centerIn: parent
-        text: "Hello World"
+        text: "Fuck Praxis"
         font.pixelSize: 24
     }
 
