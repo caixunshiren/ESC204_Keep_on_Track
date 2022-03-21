@@ -25,13 +25,13 @@ start_time = time.time()
 
 def fetch_data():
     TIME.append(time.time()-start_time)
-    LIGHT.append(np.random.random_sample(1))
-    HUMIDITY.append(np.random.random_sample(1))
-    if len(TIME) > MAX_DISPLAY_SIZE:
-        TIME.pop(0)
-        LIGHT.pop(0)
-        HUMIDITY.pop(0)
-    time.sleep(1)
+    with open("light.txt") as f:
+        LIGHT = f.read().split('\n')
+    with open("heat.txt") as f:
+        HEAT = f.read().split('\n')
+
+    return (TIME, LIGHT, HEAT)
+    
 
 
 class MplCanvas(FigureCanvas):
@@ -68,7 +68,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.canvas.axes.cla()  # Clear the canvas.
         self.canvas.axes2.cla()
         # self.canvas.axes.plot(self.xdata, self.ydata, 'r')
-        fetch_data()
+        TIME, LIGHT, HEAT = fetch_data()
         self.canvas.axes.plot(TIME, LIGHT, 'r')
         self.canvas.axes2.plot(TIME, HUMIDITY, 'b')
         self.canvas.axes.set_title("Light Intensity vs. Time")
