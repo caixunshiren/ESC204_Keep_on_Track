@@ -78,7 +78,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # Trigger the canvas to update and redraw.
         self.canvas.draw()
 
-
-app = QtWidgets.QApplication(sys.argv)
-w = MainWindow()
-app.exec_()
+def run_ui():
+    app = QtWidgets.QApplication(sys.argv)
+    w = MainWindow()
+    app.exec_()
