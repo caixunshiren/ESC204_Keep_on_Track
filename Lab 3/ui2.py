@@ -13,9 +13,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import time
 
-TIME = []
-LIGHT = []
-HUMIDITY = []
+
 XLIM = [0,1]
 YLIM = [0,1]
 MAX_DISPLAY_SIZE = 20
@@ -24,13 +22,27 @@ start_time = time.time()
 
 
 def fetch_data():
-    TIME.append(time.time()-start_time)
+ 
     with open("light.txt") as f:
-        LIGHT = f.read().split('\n')
+        contents = f.read()
+        if contents == '':
+            LIGHT = []
+            TIMEL = []
+        else:
+            LIGHT = [float(i.split(' ')[0]) for i in contents.split('\n')[:-1]]
+            TIMEL = [float(i.split(' ')[1]) for i in contents.split('\n')[:-1]]
     with open("heat.txt") as f:
-        HEAT = f.read().split('\n')
+        contents = f.read()
+        if contents == '':
+            HEAT = []
+            TIMEH = []
+        else:
+            HEAT = [float(i.split(' ')[0]) for i in contents.split('\n')[:-1]]
+            TIMEH = [float(i.split(' ')[1]) for i in contents.split('\n')[:-1]]
 
-    return (TIME, LIGHT, HEAT)
+    TIMEL = [n-TIMEL[0] for n in TIMEL]
+    TIMEH = [n-TIMEH[0] for n in TIMEH]
+    return (TIMEL, TIMEH,  LIGHT, HEAT)
     
 
 
@@ -68,12 +80,13 @@ class MainWindow(QtWidgets.QMainWindow):
         self.canvas.axes.cla()  # Clear the canvas.
         self.canvas.axes2.cla()
         # self.canvas.axes.plot(self.xdata, self.ydata, 'r')
-        TIME, LIGHT, HEAT = fetch_data()
-        self.canvas.axes.plot(TIME, LIGHT, 'r')
-        self.canvas.axes2.plot(TIME, HUMIDITY, 'b')
+        TIMEL, TIMEH, LIGHT, HEAT = fetch_data()
+
+        self.canvas.axes.plot(TIMEL, LIGHT, 'r')
+        self.canvas.axes2.plot(TIMEH, HEAT, 'b')
         self.canvas.axes.set_title("Light Intensity vs. Time")
         self.canvas.axes.set_xlabel('Time (s)')
-        self.canvas.axes2.set_title("Humidity vs. Time")
+        self.canvas.axes2.set_title("Heat vs. Time")
         self.canvas.axes2.set_xlabel('Time (s)')
         # Trigger the canvas to update and redraw.
         self.canvas.draw()
