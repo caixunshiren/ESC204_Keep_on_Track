@@ -15,7 +15,7 @@ import time
 
 TIME = []
 LIGHT = []
-HUMIDITY = []
+TEMPERATURE = []
 XLIM = [0,1]
 YLIM = [0,1]
 MAX_DISPLAY_SIZE = 20
@@ -26,11 +26,11 @@ start_time = time.time()
 def fetch_data():
     TIME.append(time.time()-start_time)
     LIGHT.append(np.random.random_sample(1))
-    HUMIDITY.append(np.random.random_sample(1))
+    TEMPERATURE.append(np.random.random_sample(1))
     if len(TIME) > MAX_DISPLAY_SIZE:
         TIME.pop(0)
         LIGHT.pop(0)
-        HUMIDITY.pop(0)
+        TEMPERATURE.pop(0)
     time.sleep(1)
 
 
@@ -70,11 +70,13 @@ class MainWindow(QtWidgets.QMainWindow):
         # self.canvas.axes.plot(self.xdata, self.ydata, 'r')
         fetch_data()
         self.canvas.axes.plot(TIME, LIGHT, 'r')
-        self.canvas.axes2.plot(TIME, HUMIDITY, 'b')
+        self.canvas.axes2.plot(TIME, TEMPERATURE, 'b')
         self.canvas.axes.set_title("Light Intensity vs. Time")
         self.canvas.axes.set_xlabel('Time (s)')
-        self.canvas.axes2.set_title("Humidity vs. Time")
+        self.canvas.axes.set_ylabel('Light Intensity (l)')
+        self.canvas.axes2.set_title("Temperature vs. Time")
         self.canvas.axes2.set_xlabel('Time (s)')
+        self.canvas.axes2.set_ylabel('Temperature (Celsius)')
         # Trigger the canvas to update and redraw.
         self.canvas.draw()
 
