@@ -13,9 +13,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import time
 
-TIME = []
-LIGHT = []
-TEMPERATURE = []
 XLIM = [0,1]
 YLIM = [0,1]
 MAX_DISPLAY_SIZE = 20
@@ -24,14 +21,26 @@ start_time = time.time()
 
 
 def fetch_data():
-    TIME.append(time.time()-start_time)
-    LIGHT.append(np.random.random_sample(1))
-    TEMPERATURE.append(np.random.random_sample(1))
-    if len(TIME) > MAX_DISPLAY_SIZE:
-        TIME.pop(0)
-        LIGHT.pop(0)
-        TEMPERATURE.pop(0)
-    time.sleep(1)
+    with open("light.txt") as f:
+        contents = f.read()
+        if contents == '':
+            LIGHT = []
+            TIMEL = []
+        else:
+            LIGHT = [float(i.split(' ')[0]) for i in contents.split('\n')[:-1]]
+            TIMEL = [float(i.split(' ')[1]) for i in contents.split('\n')[:-1]]
+    with open("heat.txt") as f:
+        contents = f.read()
+        if contents == '':
+            HEAT = []
+            TIMEH = []
+        else:
+            HEAT = [float(i.split(' ')[0]) for i in contents.split('\n')[:-1]]
+            TIMEH = [float(i.split(' ')[1]) for i in contents.split('\n')[:-1]]
+
+    TIMEL = [n-TIMEL[0] for n in TIMEL]
+    TIMEH = [n-TIMEH[0] for n in TIMEH]
+    return (TIMEL, TIMEH,  LIGHT, HEAT)
 
 
 class MplCanvas(FigureCanvas):
@@ -68,19 +77,22 @@ class MainWindow(QtWidgets.QMainWindow):
         self.canvas.axes.cla()  # Clear the canvas.
         self.canvas.axes2.cla()
         # self.canvas.axes.plot(self.xdata, self.ydata, 'r')
-        fetch_data()
-        self.canvas.axes.plot(TIME, LIGHT, 'r')
-        self.canvas.axes2.plot(TIME, TEMPERATURE, 'b')
+
+        TIMEL, TIMEH, LIGHT, HEAT = fetch_data()
+
+        self.canvas.axes.plot(TIMEL, LIGHT, 'r')
+        self.canvas.axes2.plot(TIMEH, HEAT, 'b')
         self.canvas.axes.set_title("Light Intensity vs. Time")
         self.canvas.axes.set_xlabel('Time (s)')
         self.canvas.axes.set_ylabel('Light Intensity (l)')
-        self.canvas.axes2.set_title("Temperature vs. Time")
+        self.canvas.axes2.set_title("Heat vs. Time")
         self.canvas.axes2.set_xlabel('Time (s)')
         self.canvas.axes2.set_ylabel('Temperature (Celsius)')
         # Trigger the canvas to update and redraw.
         self.canvas.draw()
 
 
-app = QtWidgets.QApplication(sys.argv)
-w = MainWindow()
-app.exec_()
+def run_ui():
+    app = QtWidgets.QApplication(sys.argv)
+    w = MainWindow()
+    app.exec_()
