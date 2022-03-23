@@ -84,8 +84,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.canvas.axes2.plot(TIMEH, HEAT, 'b')
         self.canvas.axes.set_title("Light Intensity vs. Time")
         self.canvas.axes.set_xlabel('Time (s)')
-        self.canvas.axes.set_ylabel('Light Intensity (l)')
-        self.canvas.axes2.set_title("Heat vs. Time")
+        self.canvas.axes.set_ylabel('Light Intensity (volts)')
+        self.canvas.axes2.set_title("Temperature vs. Time")
         self.canvas.axes2.set_xlabel('Time (s)')
         self.canvas.axes2.set_ylabel('Temperature (Celsius)')
         # Trigger the canvas to update and redraw.

@@ -3,7 +3,7 @@ ESC204 2022W Widget Lab 3IoT, Part 8
 Task: Implement an MQTT receiver. 
 ''' 
 import paho.mqtt.client as mqtt 
-import time
+import time, math
 
 topic = "uoft/p3/4/"
 start = None
@@ -25,7 +25,13 @@ def on_message(client, userdata, msg):
             f.write(msg.payload.decode("utf-8") + " " + str(round(time.time(), 1)) + "\n")
     elif msg.topic == topic + "heat":
         with open("heat.txt", "a") as f:
-            f.write(msg.payload.decode("utf-8") + " " + str(round(time.time(), 1)) + "\n")
+            v = float(msg.payload.decode("utf-8"))
+            print(f'v: {v}')
+            R = (3.3-v)/(v/10000)
+            print(f'R: {R}')
+            tK = 1/(1/298.15 - math.log(R/10000)/3950)
+            tC = tK - 273.15 
+            f.write(str(tC) + " " + str(round(time.time(), 1)) + "\n")
 
 def start_server():
     client = mqtt.Client() 
